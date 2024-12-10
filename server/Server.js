@@ -95,9 +95,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong!" });
 });
 
-app.get("/", (req, res) => {
-  res.redirect(`${process.env.FRONTEND_URL}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.get("/", (req, res) => {
+    res.redirect(`${process.env.FRONTEND_URL}`);
+  });
+}
 
 // Route to place an order
 app.post("/orders", async (req, res) => {
