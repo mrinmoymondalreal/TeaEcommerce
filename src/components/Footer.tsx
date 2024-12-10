@@ -9,9 +9,9 @@ import { NLink } from "./Header";
 export function Footer() {
   return (
     <footer className="relative w-full px-6 h-[30vh] flex flex-col space-y-10 justify-center items-center text-slate-100 overflow-hidden">
-      <div className="flex gap-x-6 max-w-6xl mx-auto">
+      <div className="flex gap-x-6 max-w-6xl mx-auto flex-col md:flex-row">
         <div className="flex-1">
-          This Website is to demostrate the skills of the developer. This fuck
+          This Website is to demostrate the skills of the developer. This
           website does not sell or own any of the products listed here.
           <span className="block mt-2">
             Made with ❤️ by{" "}
@@ -34,7 +34,7 @@ export function Footer() {
         </div>
       </div>
       <div className="z-[1]">
-        <div className="flex space-x-4 mt-4">
+        <div className="flex space-x-4 md:mt-4 -mt-7">
           <a
             href="https://github.com/mrinmoymondalreal"
             target="_blank"
@@ -65,7 +65,7 @@ export function Footer() {
           </a>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 uppercase pointer-events-none text-[10rem] w-full font-bold text-slate-700/40 -translate-x-10 translate-y-20">
+      <div className="absolute bottom-0 left-0 uppercase pointer-events-none text-[5rem] md:text-[10rem] w-full font-bold text-slate-700/40 -translate-x-[4%] translate-y-[30%]">
         Tea & We
       </div>
     </footer>

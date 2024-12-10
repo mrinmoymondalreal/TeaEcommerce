@@ -31,7 +31,7 @@ let totalFetched = 0,
   enableFetch = true;
 
 export async function loader() {
-  return (await axios.get(`${import.meta.env.VITE_BACKEND}/products`)).data;
+  return (await axios.get(`${import.meta.env.VITE_BACKEND}/api/products`)).data;
 }
 
 function Title() {
@@ -182,7 +182,7 @@ function Product({
   useEffect(() => {
     if (shouldObserve && isInView == true && enableFetch) {
       axios(
-        `${import.meta.env.VITE_BACKEND}/products?limit=5&skip=${++totalFetched * 5}`
+        `${import.meta.env.VITE_BACKEND}/api/products?limit=5&skip=${++totalFetched * 5}`
       ).then((res) => {
         setProducts((products) => [...products, ...res.data]);
       });
@@ -296,7 +296,7 @@ function FilterHeader() {
     }
 
     const products = await axios(
-      `${import.meta.env.VITE_BACKEND}/search?q=${q.trim()}`
+      `${import.meta.env.VITE_BACKEND}/api/search?q=${q.trim()}`
     );
     setProducts(() => products.data);
   }, 1000);

@@ -19,7 +19,7 @@ export async function loader(props: LoaderFunctionArgs) {
   const { params } = props;
   return (
     await axios.get(
-      `${import.meta.env.VITE_BACKEND}/product/name/${params.name}`
+      `${import.meta.env.VITE_BACKEND}/api/product/name/${params.name}`
     )
   ).data;
 }
@@ -232,7 +232,7 @@ function Reviews() {
 
   return (
     <div className="w-full flex flex-col justify-evenly items-center">
-      <div className="w-max italic text-4xl h-[30vh]">
+      <div className="w-full max-w-max px-7 italic text-2xl md:text-4xl h-[30vh]">
         Rated the best coffee by the New York Times
       </div>
       <div className="flex flex-col items-center gap-y-2 h-[30vh]">
@@ -256,7 +256,7 @@ function Reviews() {
 function Description() {
   const products = useLoaderData() as ProductType;
   return (
-    <div className="max-w-5xl mx-auto flex flex-col justify-center py-8 mt-10 space-y-4 text-center h-[60vh]">
+    <div className="max-w-5xl mx-auto flex flex-col justify-center py-8 px-7 mt-10 space-y-4 text-center h-[60vh]">
       <p className="font-bold text-3xl mx-auto">Description</p>
       <p>{products.description}</p>
     </div>

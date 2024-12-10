@@ -130,7 +130,7 @@ function Page() {
 
   async function createOrder() {
     const { status, data } = await fetch(
-      `${import.meta.env.VITE_BACKEND}/api/order`,
+      `${import.meta.env.VITE_BACKEND}/api/order/create`,
       {
         method: "POST",
         headers: {
@@ -156,7 +156,7 @@ function Page() {
       name: "Acme Corp",
       description: "Test Transaction",
       order_id: data.orderId, // This is the order_id created in the backend
-      callback_url: `${import.meta.env.VITE_BACKEND}/handle_success`, // Your success URL
+      callback_url: `${import.meta.env.VITE_BACKEND}/api/handle_success`, // Your success URL
       prefill: {
         name: "Gaurav Kumar",
         email: "gaurav.kumar@example.com",

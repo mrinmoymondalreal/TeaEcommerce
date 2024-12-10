@@ -10,7 +10,7 @@ import { z } from "zod";
 import Google from "@auth/express/providers/google";
 import { ExpressAuth, getSession } from "@auth/express";
 import { createOrder, getkeyId, init, verifyPayment } from "./payment.js";
-import { redirect } from "react-router-dom";
+import { join } from "path";
 
 config();
 
@@ -45,6 +45,7 @@ const authConfig = {
       clientSecret: process.env.AUTH_GOOGLE_SECERT,
     }),
   ],
+  trustHost: true,
   callbacks: {
     async signIn({ user }) {
       const { name, email } = user;
@@ -101,42 +102,8 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Route to place an order
-app.post("/orders", async (req, res) => {
-  const { user_id, cart_items } = req.body;
-  try {
-    const client = await pool.connect();
-    try {
-      await client.query("BEGIN");
-      const orderResult = await client.query(
-        "INSERT INTO orders (user_id) VALUES ($1) RETURNING *",
-        [user_id]
-      );
-      const orderId = orderResult.rows[0].order_id;
-
-      const orderItemsPromises = cart_items.map((item) => {
-        return client.query(
-          "INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)",
-          [orderId, item.product_id, item.quantity]
-        );
-      });
-
-      await Promise.all(orderItemsPromises);
-      await client.query("COMMIT");
-      res.status(201).json({ order_id: orderId });
-    } catch (err) {
-      await client.query("ROLLBACK");
-      res.status(500).json({ status: "error", data: null, error: err.message });
-    } finally {
-      client.release();
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // Route to get all products
-app.get("/products", async (req, res) => {
+app.get("/api/products", async (req, res) => {
   try {
     const { skip, limit } = req.query;
 
@@ -191,7 +158,7 @@ app.get("/products", async (req, res) => {
   }
 });
 
-app.get("/search", async (req, res) => {
+app.get("/api/search", async (req, res) => {
   try {
     const { q: query } = req.query;
     const result = await pool.query(
@@ -210,7 +177,7 @@ app.get("/search", async (req, res) => {
 });
 
 // Route to get a single product by ID
-app.get("/product/:id", async (req, res) => {
+app.get("/api/product/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query(
@@ -227,7 +194,7 @@ app.get("/product/:id", async (req, res) => {
 });
 
 // Route to get a single product by name
-app.get("/product/name/:name", async (req, res) => {
+app.get("/api/product/name/:name", async (req, res) => {
   const { name } = req.params;
   try {
     const formattedName = name.replace(/_/g, " ");
@@ -346,7 +313,7 @@ init();
 const order_map = new Map();
 
 // Route to create a new order
-app.post("/api/order", async (req, res) => {
+app.post("/api/order/create", async (req, res) => {
   const { user_id, total_amount, items } = req.body;
   try {
     const client = await pool.connect();
@@ -391,7 +358,7 @@ app.post("/api/order", async (req, res) => {
   }
 });
 
-app.post("/handle_success", async (req, res) => {
+app.post("/api/handle_success", async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
   const reciept_id = order_map.get(razorpay_order_id);
@@ -410,6 +377,9 @@ app.post("/handle_success", async (req, res) => {
 
   res.redirect(`${process.env.FRONTEND_URL}/order_success`);
 });
+
+app.use("/", express.static(join(process.cwd(), "dist")));
+app.use("/*", express.static(join(process.cwd(), "dist")));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);

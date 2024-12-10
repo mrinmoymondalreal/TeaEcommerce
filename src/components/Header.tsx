@@ -45,7 +45,9 @@ export function MainPageHeader({ className }: { className?: string }) {
     >
       <div className="flex justify-between items-center max-w-5xl mx-auto w-full px-5 py-4">
         <div className="flex">
-          <span className="text-2xl font-black">TEA & WE</span>
+          <span className="text-2xl font-black">
+            <Link to="/">TEA & WE</Link>
+          </span>
         </div>
         <div className="hidden md:block">
           <ul className="*:inline-block space-x-4">
