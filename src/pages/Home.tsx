@@ -1,7 +1,9 @@
 import { SmoothScrollHero } from "@/components/ParallaxSection";
 
 export async function loader() {
-  return true;
+  return await fetch(`${import.meta.env.VITE_BACKEND}/api/hero_products`).then(
+    (e) => e.json()
+  );
 }
 
 export const element = <SmoothScrollHero />;

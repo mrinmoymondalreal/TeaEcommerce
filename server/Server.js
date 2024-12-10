@@ -153,6 +153,13 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
+app.get("/api/hero_products", async (req, res) => {
+  const result = await pool.query(
+    "SELECT title, image_urls FROM products LIMIT 7"
+  );
+  res.send({ status: 200, data: result.rows });
+});
+
 app.get("/api/search", async (req, res) => {
   try {
     const { q: query } = req.query;

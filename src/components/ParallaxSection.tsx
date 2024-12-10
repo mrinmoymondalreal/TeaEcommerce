@@ -8,7 +8,7 @@ import {
   useTransform,
 } from "motion/react";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import { Footer } from "./Footer";
 
 export const SmoothScrollHero = () => {
@@ -223,6 +223,12 @@ const ParallaxImg = ({
 };
 
 const Schedule = () => {
+  const { data } = useLoaderData() as {
+    data: { image_urls: string[]; title: string }[];
+  };
+
+  let i = -1;
+
   return (
     <section
       id="launch-schedule"
@@ -240,29 +246,51 @@ const Schedule = () => {
         <ScheduleItem
           title="Straight from Himalayas"
           date="Dec 9th"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
           location="Himalayas"
         />
         <ScheduleItem
           title="Best of the Best"
           date="Dec 20th"
           location="Himalayas"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
         />
-        <ScheduleItem title="Taste of life" date="Jan 13th" location="India" />
+        <ScheduleItem
+          title="Taste of life"
+          date="Jan 13th"
+          location="India"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
+        />
         <ScheduleItem
           title="Nature in Sip"
           date="Feb 22nd"
           location="Darjeeeling"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
         />
-        <ScheduleItem title="Way to Pease" date="Mar 1st" location="Assam" />
+        <ScheduleItem
+          title="Way to Pease"
+          date="Mar 1st"
+          location="Assam"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
+        />
         <ScheduleItem
           title="Fresh Nature Taste"
           date="Mar 8th"
           location="India"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
         />
         <ScheduleItem
           title="Nice to Taste"
           date="Apr 8th"
           location="Dargeeling"
+          href={data[++i].title}
+          image={data[i].image_urls[i]}
         />
       </div>
       <div className="text-center">
@@ -281,29 +309,41 @@ const ScheduleItem = ({
   title,
   date,
   location,
+  image,
+  href,
 }: {
   title: string;
   date: string;
   location: string;
+  image: string;
+  href: string;
 }) => {
   return (
-    <motion.div
-      initial={{ y: 48, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      transition={{ ease: "easeInOut", duration: 0.75 }}
-      className="mb-9  border-l border-zinc-800 px-4 space-y-2"
-    >
-      <div className="w-full aspect-[2/2.1] bg-gray-600"></div>
-      <div className="flex md:flex-row flex-col md:items-center justify-between">
-        <div>
-          <p className="mb-1.5 text-xl text-zinc-50">{title}</p>
-          <p className="text-sm uppercase text-zinc-500">{date}</p>
+    <Link to={href.toLowerCase().replace(/\s/g, "_")}>
+      <motion.div
+        initial={{ y: 48, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ ease: "easeInOut", duration: 0.75 }}
+        className="mb-9  border-l border-zinc-800 px-4 space-y-2"
+      >
+        <div className="w-full aspect-[2/2.1] bg-gray-600">
+          <img
+            src={image}
+            alt={href + "'s Image"}
+            className="object-cover w-full h-full"
+          />
         </div>
-        <div className="flex items-center gap-1.5 text-end text-sm uppercase text-zinc-500">
-          <p>{location}</p>
-          <MapPin />
+        <div className="flex md:flex-row flex-col md:items-center justify-between">
+          <div>
+            <p className="mb-1.5 text-xl text-zinc-50">{title}</p>
+            <p className="text-sm uppercase text-zinc-500">{date}</p>
+          </div>
+          <div className="flex items-center gap-1.5 text-end text-sm uppercase text-zinc-500">
+            <p>{location}</p>
+            <MapPin />
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </Link>
   );
 };
