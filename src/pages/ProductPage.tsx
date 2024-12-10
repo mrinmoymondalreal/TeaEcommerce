@@ -330,27 +330,30 @@ function Description() {
 }
 
 function MoreProducts() {
+  const [products, setProducts] = useState<ProductType[]>([]);
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND}/api/hero_products?limit=3`)
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.status === 200) {
+          setProducts(response.data);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <>
       <div className="mx-auto text-center text-3xl font-bold uppercase italic mb-8">
         More Products
       </div>
       <div className="mx-auto max-w-5xl grid grid-cols-2 lg:grid-cols-3 flex-[0.7] px-4 py-6 gap-4 gap-y-6 pb-64">
-        {new Array(3).fill(0).map((_, i) => (
+        {products.map((product, i) => (
           <div className="w-full" key={i}>
             <div className="bg-zinc-950 border border-gray-500 aspect-square w-full">
-              <img src="" alt="" />
+              <img src={product.image_urls[0]} alt="" />
             </div>
-            <div className="flex flex-col -space-y-[4px]">
-              <span className="text-xl">Himalayan Tea</span>
-              <span className="flex items-center gap-x-1">
-                {new Array(5).fill(0).map((_, i) => (
-                  <Star key={i} size={15} />
-                ))}
-                <span>(20)</span>
-              </span>
-              <span>Rs. 450</span>
-            </div>
+            <div className="text-2xl text-center mt-2">{product.title}</div>
           </div>
         ))}
       </div>

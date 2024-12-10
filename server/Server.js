@@ -154,8 +154,10 @@ app.get("/api/products", async (req, res) => {
 });
 
 app.get("/api/hero_products", async (req, res) => {
+  const { limit = 7 } = req.query;
   const result = await pool.query(
-    "SELECT title, image_urls FROM products LIMIT 7"
+    "SELECT title, image_urls FROM products LIMIT $1",
+    [limit]
   );
   res.send({ status: 200, data: result.rows });
 });
