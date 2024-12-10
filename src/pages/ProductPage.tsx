@@ -1,0 +1,304 @@
+import { Footer } from "@/components/Footer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cartAtom } from "@/lib/store";
+import axios from "axios";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { MinusIcon, PlusIcon, Star, StarHalf } from "lucide-react";
+import { useEffect, useState } from "react";
+import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+
+import { motion } from "motion/react";
+
+export async function loader(props: LoaderFunctionArgs) {
+  const { params } = props;
+  return (await axios.get(`http://localhost:3000/product/name/${params.name}`))
+    .data;
+}
+
+interface ItemType {
+  id: string;
+  variant: string;
+  quantity: number;
+}
+
+const ItemAtom = atom<ItemType>({
+  id: "",
+  variant: "0",
+  quantity: 1,
+});
+
+export function ItemQuantity() {
+  const [item, setItem] = useAtom(ItemAtom);
+  function setQuantity(q: number) {
+    setItem((prev: ItemType) => {
+      if (item.quantity + q > 0)
+        return { ...prev, quantity: prev.quantity + q };
+      return prev;
+    });
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => setQuantity(-1)}
+        className="border border-gray-300 h-12 aspect-square"
+      >
+        <MinusIcon size={20} className="mx-auto" />
+      </button>
+      <span className="mx-4">{item.quantity}</span>
+      <button
+        onClick={() => setQuantity(1)}
+        className="border border-gray-300 h-12 aspect-square"
+      >
+        <PlusIcon size={20} className="mx-auto" />
+      </button>
+    </>
+  );
+}
+
+function AddToCart() {
+  const item = useAtomValue(ItemAtom);
+
+  const setCartItem = useSetAtom(cartAtom);
+
+  const [isAnimate, setAnimate] = useState(false);
+
+  function handleAdd2Cart() {
+    if (item.id === null || item.variant === null || item.quantity <= 0) return;
+    setCartItem((prev) => {
+      const index = prev.findIndex(
+        (e) => e.id === item.id && e.variant === item.variant
+      );
+      if (index === -1) return [...prev, { ...item }];
+      prev[index].quantity += item.quantity;
+      return [...prev];
+    });
+  }
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isAnimate) {
+      timeout = setTimeout(() => {
+        setAnimate(false);
+      }, 2000);
+    }
+    return () => {
+      timeout && clearTimeout(timeout);
+    };
+  }, [isAnimate]);
+
+  const variant = {
+    c1: {
+      initial: { scale: 0.8, opacity: 0 },
+      animate: { opacity: 1 },
+    },
+    c2: {
+      initial: { opacity: 1 },
+      animate: { scale: 0.8, opacity: 0 },
+    },
+  };
+
+  return (
+    <motion.button
+      onClick={() => {
+        setAnimate(true);
+        handleAdd2Cart();
+      }}
+      className="relative h-12 flex justify-center items-center w-full bg-black text-white py-3 font-bold"
+      animate={isAnimate ? "animate" : "initial"}
+    >
+      <motion.div className="absolute" variants={variant.c1}>
+        Added to cart
+      </motion.div>
+      <motion.div className="absolute" variants={variant.c2}>
+        Add to cart
+      </motion.div>
+    </motion.button>
+  );
+}
+
+type ProductType = {
+  title: string;
+  price: number;
+  product_id: string;
+  description: string;
+  variant: string;
+  image_urls: string[];
+  rating: number;
+  count: number;
+};
+
+function ProductFirst() {
+  let product = useLoaderData() as ProductType;
+  const setItem = useSetAtom(ItemAtom);
+
+  useEffect(() => {
+    setItem({
+      id: product.product_id,
+      variant: "0",
+      quantity: 1,
+    });
+  }, []);
+
+  return (
+    <div className="flex flex-col md:flex-row mt-16 min-h-[calc(100vh-4.5rem)]">
+      <div className="flex-[2]">
+        <img
+          src={product.image_urls[0]}
+          alt="Product packaging with abstract design"
+          className="w-full h-auto col-span-2"
+        />
+        <div className="grid grid-cols-2">
+          <img
+            src="https://placehold.co/100x100/181818/white"
+            alt="Product packaging with abstract design"
+            className="max-w-full w-full border border-gray-300 row-span-2"
+          />
+          <img
+            src="https://placehold.co/100x100/181818/white"
+            alt="Product packaging with abstract design"
+            className="max-w-full w-full border border-gray-300"
+          />
+          <img
+            src="https://placehold.co/100x100/181818/white"
+            alt="Product packaging with abstract design"
+            className="max-w-full w-full border border-gray-300"
+          />
+        </div>
+      </div>
+      <div className="flex-1 p-8 sticky top-16 h-fit">
+        <h1 className="text-4xl font-bold mb-2">{product.title}</h1>
+        <p className="text-lg italic mb-4">
+          Rick, Tasty, and Mountains in Every Sip
+        </p>
+        <p className="text-2xl font-bold mb-4">Rs. {product.price}</p>
+        <div className="flex items-end justify-evenly">
+          <div className="mb-4 w-full flex-[1]">
+            <label className="block text-sm font-bold mb-2">Size (in g)</label>
+            <Select
+              onValueChange={(value) =>
+                setItem((prev) => ({ ...prev, variant: value }))
+              }
+              defaultValue="0"
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select size" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">100g</SelectItem>
+                <SelectItem value="1">200g</SelectItem>
+                <SelectItem value="2">300g</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex-1 flex justify-center items-center h-full mb-4">
+            <ItemQuantity />
+          </div>
+        </div>
+        <AddToCart />
+        <div className="mt-4 text-sm">
+          <p>CERTIFIED B-CORP</p>
+          <p>FAST DELIVERY</p>
+          <p>HIGH-END SELECTION</p>
+          <p>100% SECURE PAYMENT</p>
+        </div>
+        <hr className="my-4" />
+        <div className="text-sm">
+          <div className="flex justify-between mb-2">
+            <span className="font-bold">ORIGIN</span>
+            <span>India</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-bold">VARIETY</span>
+            <span>100g, 200g, 300g</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Reviews() {
+  const product = useLoaderData() as ProductType;
+
+  return (
+    <div className="w-full flex flex-col justify-evenly items-center">
+      <div className="w-max italic text-4xl h-[30vh]">
+        Rated the best coffee by the New York Times
+      </div>
+      <div className="flex flex-col items-center gap-y-2 h-[30vh]">
+        <span className="flex">
+          {product.rating &&
+            new Array(Math.floor(product.rating))
+              .fill(0)
+              .map((_, i) => <Star key={i} size={30} />)}
+          {product.rating &&
+            product.rating - Math.floor(product.rating) > 0 && (
+              <StarHalf size={30} />
+            )}
+        </span>
+        <span className="text-xl">{product.rating} out of 5</span>
+        <span className="text-gray-400">Based on {product.count} reviews</span>
+      </div>
+    </div>
+  );
+}
+
+function Description() {
+  const products = useLoaderData() as ProductType;
+  return (
+    <div className="max-w-5xl mx-auto flex flex-col justify-center py-8 mt-10 space-y-4 text-center h-[60vh]">
+      <p className="font-bold text-3xl mx-auto">Description</p>
+      <p>{products.description}</p>
+    </div>
+  );
+}
+
+function MoreProducts() {
+  return (
+    <>
+      <div className="mx-auto text-center text-3xl font-bold uppercase italic mb-8">
+        More Products
+      </div>
+      <div className="mx-auto max-w-5xl grid grid-cols-2 lg:grid-cols-3 flex-[0.7] px-4 py-6 gap-4 gap-y-6 pb-64">
+        {new Array(3).fill(0).map((_, i) => (
+          <div className="w-full" key={i}>
+            <div className="bg-zinc-950 border border-gray-500 aspect-square w-full">
+              <img src="" alt="" />
+            </div>
+            <div className="flex flex-col -space-y-[4px]">
+              <span className="text-xl">Himalayan Tea</span>
+              <span className="flex items-center gap-x-1">
+                {new Array(5).fill(0).map((_, i) => (
+                  <Star key={i} size={15} />
+                ))}
+                <span>(20)</span>
+              </span>
+              <span>Rs. 450</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function Page() {
+  return (
+    <>
+      <ProductFirst />
+      <Description />
+      <Reviews />
+      <MoreProducts />
+      <Footer />
+    </>
+  );
+}
+
+export const element = <Page />;
