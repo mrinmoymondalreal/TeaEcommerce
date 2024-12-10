@@ -4,7 +4,7 @@ import { Link, useLoaderData } from "react-router-dom";
 
 export async function loader() {
   try {
-    const resp = await fetch("http://localhost:3000/api/orders", {
+    const resp = await fetch(`${import.meta.env.VITE_BACKEND}/api/orders`, {
       credentials: "include",
     }).then((e) => e.json());
 
@@ -52,7 +52,7 @@ function Page() {
       <div className="min-h-screen flex flex-col justify-center items-center">
         <Link
           className="bg-zinc-950 rounded-none px-6 py-4"
-          to={"http://localhost:3000/auth/signin"}
+          to={`${import.meta.env.VITE_BACKEND}/auth/signin`}
         >
           Sign In to view your orders
         </Link>

@@ -67,9 +67,13 @@ export function MainPageHeader({ className }: { className?: string }) {
             </NLink>
             <li>
               {isUserAuth ? (
-                <NLink href="http://localhost:3000/auth/signout">signout</NLink>
+                <NLink href={`${import.meta.env.VITE_BACKEND}/auth/signout`}>
+                  signout
+                </NLink>
               ) : (
-                <NLink href="http://localhost:3000/auth/signin">signin</NLink>
+                <NLink href={`${import.meta.env.VITE_BACKEND}/auth/signin`}>
+                  signin
+                </NLink>
               )}
             </li>
           </ul>

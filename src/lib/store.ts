@@ -19,7 +19,7 @@ type ProductType = {
 
 async function fetchDetails({ id, quantity, variant }: CartItem): Promise<ProductType> {
   return axios
-    .get(`http://localhost:3000/product/${id}`)
+    .get(`${import.meta.env.VITE_BACKEND}/product/${id}`)
     .then((res) => ({ ...res.data, quantity, variant }));
 }
 

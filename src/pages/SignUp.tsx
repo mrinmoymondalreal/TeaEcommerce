@@ -20,7 +20,7 @@ const signup = createSimpleForm({
 
 function SignUp() {
   const { error, action, data } = createFormAction(
-    "http://localhost:3000/api/signup"
+    `${import.meta.env.VITE_BACKEND}/api/signup`
   );
 
   console.log(data, error);

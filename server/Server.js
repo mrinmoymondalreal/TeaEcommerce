@@ -24,7 +24,7 @@ const pool = new pg.Pool({
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+      `${process.env.FRONTEND_URL}`,
       "http://localhost:4173",
       `http://localhost:${PORT}`,
       `http://${hostname()}:${PORT}`,
@@ -96,7 +96,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  res.redirect("http://localhost:5173");
+  res.redirect(`${process.env.FRONTEND_URL}`);
 });
 
 // Route to place an order
@@ -398,7 +398,7 @@ app.post("/handle_success", async (req, res) => {
     razorpay_payment_id,
     razorpay_signature
   );
-  if (!isValid) return res.redirect("http://localhost:5173/order_failed");
+  if (!isValid) return res.redirect(`${process.env.FRONTEND_URL}/order_failed`);
 
   const orderid = reciept_id.split("_")[1];
 
@@ -406,7 +406,7 @@ app.post("/handle_success", async (req, res) => {
     orderid,
   ]);
 
-  res.redirect("http://localhost:5173/order_success");
+  res.redirect(`${process.env.FRONTEND_URL}/order_success`);
 });
 
 app.listen(PORT, () => {

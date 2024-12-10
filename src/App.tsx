@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     element: <IndexWrapper />,
     loader: async () =>
       (
-        await fetch("http://localhost:3000/api/user", {
+        await fetch(`${import.meta.env.VITE_BACKEND}/api/user`, {
           credentials: "include",
         })
       ).ok,

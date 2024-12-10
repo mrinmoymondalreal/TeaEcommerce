@@ -16,10 +16,11 @@ type ProductType = {
 };
 
 export async function loader() {
-  const resp = await fetch("http://localhost:3000/api/user", {
+  const resp = await fetch(`${import.meta.env.VITE_BACKEND}/api/user`, {
     credentials: "include",
   });
-  if (resp.status !== 200) return redirect("http://localhost:3000/auth/signin");
+  if (resp.status !== 200)
+    return redirect(`${import.meta.env.VITE_BACKEND}/auth/signin`);
   return resp.json();
 }
 
@@ -128,18 +129,21 @@ function Page() {
   const product_list = products.data;
 
   async function createOrder() {
-    const { status, data } = await fetch("http://localhost:3000/api/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        products: product_list,
-        user_id: user.user_id,
-        total_amount: total,
-        items: product_list,
-      }),
-    }).then((res) => res.json());
+    const { status, data } = await fetch(
+      `${import.meta.env.VITE_BACKEND}/api/order`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          products: product_list,
+          user_id: user.user_id,
+          total_amount: total,
+          items: product_list,
+        }),
+      }
+    ).then((res) => res.json());
 
     if (status !== 200) {
       return;
@@ -152,7 +156,7 @@ function Page() {
       name: "Acme Corp",
       description: "Test Transaction",
       order_id: data.orderId, // This is the order_id created in the backend
-      callback_url: "http://localhost:3000/handle_success", // Your success URL
+      callback_url: `${import.meta.env.VITE_BACKEND}/handle_success`, // Your success URL
       prefill: {
         name: "Gaurav Kumar",
         email: "gaurav.kumar@example.com",

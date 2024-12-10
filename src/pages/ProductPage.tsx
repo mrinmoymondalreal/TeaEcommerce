@@ -17,8 +17,11 @@ import { motion } from "motion/react";
 
 export async function loader(props: LoaderFunctionArgs) {
   const { params } = props;
-  return (await axios.get(`http://localhost:3000/product/name/${params.name}`))
-    .data;
+  return (
+    await axios.get(
+      `${import.meta.env.VITE_BACKEND}/product/name/${params.name}`
+    )
+  ).data;
 }
 
 interface ItemType {

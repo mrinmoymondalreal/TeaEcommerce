@@ -31,7 +31,7 @@ let totalFetched = 0,
   enableFetch = true;
 
 export async function loader() {
-  return (await axios.get("http://localhost:3000/products")).data;
+  return (await axios.get(`${import.meta.env.VITE_BACKEND}/products`)).data;
 }
 
 function Title() {
@@ -182,7 +182,7 @@ function Product({
   useEffect(() => {
     if (shouldObserve && isInView == true && enableFetch) {
       axios(
-        `http://localhost:3000/products?limit=5&skip=${++totalFetched * 5}`
+        `${import.meta.env.VITE_BACKEND}/products?limit=5&skip=${++totalFetched * 5}`
       ).then((res) => {
         setProducts((products) => [...products, ...res.data]);
       });
@@ -295,7 +295,9 @@ function FilterHeader() {
       return;
     }
 
-    const products = await axios(`http://localhost:3000/search?q=${q.trim()}`);
+    const products = await axios(
+      `${import.meta.env.VITE_BACKEND}/search?q=${q.trim()}`
+    );
     setProducts(() => products.data);
   }, 1000);
 
