@@ -179,6 +179,8 @@ function Product({
   const isInView = useInView(ref, { once: true });
   const setProducts = useSetAtom(productsAtom);
 
+  console.log(product);
+
   useEffect(() => {
     if (shouldObserve && isInView == true && enableFetch) {
       axios(

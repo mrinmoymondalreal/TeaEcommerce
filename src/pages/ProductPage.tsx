@@ -188,15 +188,15 @@ function ProductFirst() {
               onValueChange={(value) =>
                 setItem((prev) => ({ ...prev, variant: value }))
               }
-              defaultValue="0"
+              defaultValue="100"
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select size" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="0">100g</SelectItem>
-                <SelectItem value="1">200g</SelectItem>
-                <SelectItem value="2">300g</SelectItem>
+                <SelectItem value="100">100g</SelectItem>
+                <SelectItem value="200">200g</SelectItem>
+                <SelectItem value="300">300g</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -249,8 +249,74 @@ function Reviews() {
         <span className="text-xl">{product.rating} out of 5</span>
         <span className="text-gray-400">Based on {product.count} reviews</span>
       </div>
+      <div className="h-[20vh] space-y-4 flex flex-col items-center">
+        <p>Rate the product</p>
+        <div className="flex items-center gap-2">
+          <StarSystem product_id={product.product_id} />
+        </div>
+      </div>
     </div>
   );
+}
+
+function StarSystem({ product_id }: { product_id: string }) {
+  const [rating, setRating] = useState<number | null>(null);
+  const [hover, setHover] = useState<number | null>(null);
+  const totalStars = 5;
+
+  useEffect(() => {
+    fetch(
+      `${import.meta.env.VITE_BACKEND}/api/checkRating?product_id=${product_id}`,
+      { credentials: "include" }
+    )
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.status !== 200) return;
+        if (response.data.rating) {
+          return setRating(response.data.rating);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (rating == null || rating <= 0) return;
+    fetch(`${import.meta.env.VITE_BACKEND}/api/rating`, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ product_id, rating }),
+    });
+  }, [rating]);
+
+  return [...Array(totalStars)].map((star, index) => {
+    const currentRating = index + 1;
+
+    return (
+      <label key={index}>
+        <input
+          key={star}
+          type="radio"
+          name="rating"
+          value={currentRating}
+          className="hidden"
+          onChange={() => setRating(currentRating)}
+        />
+        <span
+          style={{
+            color: currentRating <= (hover || rating!) ? "#ffc107" : "#e4e5e9",
+          }}
+          className="cursor-pointer text-[3rem]"
+          onMouseEnter={() => setHover(currentRating)}
+          onMouseLeave={() => setHover(null)}
+        >
+          &#9733;
+        </span>
+      </label>
+    );
+  });
 }
 
 function Description() {

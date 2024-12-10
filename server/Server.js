@@ -107,11 +107,6 @@ app.get("/api/products", async (req, res) => {
   try {
     const { skip, limit } = req.query;
 
-    // const result = await pool.query(
-    //   "SELECT title, image_urls, price, stock FROM products limit $2 offset $1",
-    //   [skip || 0, limit || 5]
-    // );
-
     const combinedQuery = `
       SELECT p.title, p.image_urls, p.price, p.stock, COALESCE(r.sum, 0) as rating, COALESCE(r.count, 0) as count
       FROM products p
@@ -129,7 +124,7 @@ app.get("/api/products", async (req, res) => {
     ]);
 
     const rows = combinedResult.rows.map((row) => {
-      row.rating = row.count > 0 ? row.sum / row.count : 0;
+      row.rating = row.count > 0 ? row.rating / row.count : 0;
       row.in_stock = row.stock > 0;
       delete row.stock;
       return row;
@@ -271,7 +266,17 @@ app.get("/api/orders", async (req, res) => {
 
 // Route to add or update a rating for a product
 app.post("/api/rating", async (req, res) => {
-  const { user_id, product_id, rating, review = "" } = req.body;
+  const session = await getSession(req, authConfig);
+
+  if (!session) {
+    return res
+      .status(400)
+      .send({ status: 400, error: "User not authenticated" });
+  }
+
+  const { user_id } = session.user;
+
+  const { product_id, rating, review = "" } = req.body;
 
   try {
     const client = await pool.connect();
@@ -296,15 +301,46 @@ app.post("/api/rating", async (req, res) => {
       }
 
       await client.query("COMMIT");
-      res.status(200).json({ status: "success" });
+      res.status(200).json({ status: 200 });
     } catch (err) {
       await client.query("ROLLBACK");
-      res.status(500).json({ status: "error", error: err.message });
+      res.status(500).json({ status: 400, error: err.message });
     } finally {
       client.release();
     }
   } catch (err) {
-    res.status(500).json({ status: "error", error: err.message });
+    res.status(500).json({ status: 500, error: err.message });
+  }
+});
+
+app.get("/api/checkRating", async (req, res) => {
+  const session = await getSession(req, authConfig);
+
+  if (!session) {
+    return res
+      .status(400)
+      .send({ status: 400, error: "User not authenticated" });
+  }
+
+  const { user_id } = session.user;
+
+  const { product_id } = req.query;
+
+  try {
+    const existingRating = await pool.query(
+      "SELECT rating FROM ratings WHERE user_id = $1 AND product_id = $2",
+      [user_id, product_id]
+    );
+
+    if (existingRating.rows.length > 0) {
+      return res
+        .status(200)
+        .json({ status: 200, data: existingRating.rows[0] });
+    }
+
+    res.status(404).json({ status: 404, data: null });
+  } catch (err) {
+    res.status(500).json({ status: 500, error: err.message });
   }
 });
 
