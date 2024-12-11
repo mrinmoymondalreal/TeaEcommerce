@@ -82,9 +82,9 @@ export function MainPageHeader({ className }: { className?: string }) {
                 <NLink
                   onClick={(e) => {
                     e.preventDefault();
-                    window.location.href = `${import.meta.env.VITE_BACKEND}/auth/signin`;
+                    window.location.href = `${import.meta.env.VITE_BACKEND}/api/auth/signin`;
                   }}
-                  href={`${import.meta.env.VITE_BACKEND}/auth/signin`}
+                  href={`${import.meta.env.VITE_BACKEND}/api/auth/signin`}
                 >
                   signin
                 </NLink>

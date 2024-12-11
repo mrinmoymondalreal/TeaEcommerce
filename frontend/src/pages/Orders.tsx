@@ -50,7 +50,7 @@ function Page() {
       <div className="min-h-screen flex flex-col justify-center items-center">
         <a
           className="bg-zinc-950 rounded-none px-6 py-4"
-          href={`${import.meta.env.VITE_BACKEND}/auth/signin`}
+          href={`${import.meta.env.VITE_BACKEND}/api/auth/signin`}
         >
           Sign In to view your orders
         </a>

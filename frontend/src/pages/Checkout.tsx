@@ -20,7 +20,7 @@ export async function loader() {
     credentials: "include",
   });
   if (resp.status !== 200)
-    return redirect(`${import.meta.env.VITE_BACKEND}/auth/signin`);
+    return redirect(`${import.meta.env.VITE_BACKEND}/api/auth/signin`);
   return resp.json();
 }
 
