@@ -7,7 +7,7 @@ const { hostname } = require("os");
 const { formValidator, validatorMiddleware } = require("./validator.js");
 const { z } = require("zod");
 
-let Google = import("@auth/express/providers/google");
+const _Google = import("@auth/express/providers/google");
 const authExpress = import("@auth/express");
 const { createOrder, getkeyId, init, verifyPayment } = require("./payment.js");
 const { join } = require("path");
@@ -84,15 +84,21 @@ const authConfig = {
 
 function ExpressAuth(config) {
   return async (...props) => {
-    Google = (await Google).default;
-    func = (await authExpress).ExpressAuth;
-    config.providers.push(
-      Google({
-        clientId: process.env.AUTH_GOOGLE_ID,
-        clientSecret: process.env.AUTH_GOOGLE_SECERT,
-      })
-    );
-    func(config)(...props);
+    try {
+      func = (await authExpress).ExpressAuth;
+      let Google = (await _Google).default;
+      if (config.providers.length === 0)
+        config.providers.push(
+          Google({
+            clientId: process.env.AUTH_GOOGLE_ID,
+            clientSecret: process.env.AUTH_GOOGLE_SECERT,
+          })
+        );
+      func(config)(...props);
+    } catch (err) {
+      console.error(err);
+      props[1].status(500).json({ error: "Something went wrong!" });
+    }
   };
 }
 
