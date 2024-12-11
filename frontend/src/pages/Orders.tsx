@@ -80,6 +80,14 @@ function Page() {
           {data.map((e, index) => (
             <Order data={e} key={index} />
           ))}
+          {data.length === 0 && (
+            <div className="text-center text-gray-300">
+              No orders found.{" "}
+              <Link to="/" className="text-slate-400 underline">
+                Go back to Home
+              </Link>
+            </div>
+          )}
         </main>
       </div>
     </div>

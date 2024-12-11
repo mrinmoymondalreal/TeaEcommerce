@@ -72,9 +72,9 @@ export function MainPageHeader({ className }: { className?: string }) {
                 <NLink
                   onClick={(e) => {
                     e.preventDefault();
-                    window.location.href = `${import.meta.env.VITE_BACKEND}/auth/signout`;
+                    window.location.href = `${import.meta.env.VITE_BACKEND}/api/auth/signout`;
                   }}
-                  href={`${import.meta.env.VITE_BACKEND}/auth/signout`}
+                  href={`${import.meta.env.VITE_BACKEND}/api/auth/signout`}
                 >
                   signout
                 </NLink>
