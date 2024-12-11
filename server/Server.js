@@ -441,8 +441,8 @@ app.post("/api/handle_success", async (req, res) => {
 app.use("/", express.static(join(process.cwd(), "frontend", "dist")));
 app.use("/*", express.static(join(process.cwd(), "frontend", "dist")));
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port http://localhost:${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on port http://localhost:${PORT}`);
+});
 
 module.exports = app;
