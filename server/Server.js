@@ -7,8 +7,8 @@ const { hostname } = require("os");
 const { formValidator, validatorMiddleware } = require("./validator.js");
 const { z } = require("zod");
 
-const Google = require("@auth/express/providers/google");
-const { ExpressAuth, getSession } = require("@auth/express");
+let Google = import("@auth/express/providers/google");
+const authExpress = import("@auth/express");
 const { createOrder, getkeyId, init, verifyPayment } = require("./payment.js");
 const { join } = require("path");
 
@@ -39,12 +39,7 @@ app.use(express.urlencoded({ extended: false }));
 app.set("trust proxy", true);
 
 const authConfig = {
-  providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECERT,
-    }),
-  ],
+  providers: [],
   trustHost: true,
   callbacks: {
     async signIn({ user }) {
@@ -86,9 +81,25 @@ const authConfig = {
   },
 };
 
-const props = ExpressAuth(authConfig);
+let ExpressAuth, getSession;
 
-app.use("/auth/*", props);
+async function initAuth() {
+  Google = (await Google).default;
+  const auth = await authExpress;
+  ExpressAuth = auth.ExpressAuth;
+  getSession = auth.getSession;
+
+  authConfig.providers.push(
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECERT,
+    })
+  );
+  const props = ExpressAuth(authConfig);
+  app.use("/auth/*", props);
+}
+
+initAuth();
 
 // // Error handling middleware
 app.use((err, req, res, next) => {
@@ -427,8 +438,8 @@ app.post("/api/handle_success", async (req, res) => {
   res.redirect(`${process.env.FRONTEND_URL}/order_success`);
 });
 
-app.use("/", express.static(join(process.cwd(), "dist")));
-app.use("/*", express.static(join(process.cwd(), "dist")));
+app.use("/", express.static(join(process.cwd(), "frontend", "dist")));
+app.use("/*", express.static(join(process.cwd(), "frontend", "dist")));
 
 // app.listen(PORT, () => {
 //   console.log(`Server is running on port http://localhost:${PORT}`);
