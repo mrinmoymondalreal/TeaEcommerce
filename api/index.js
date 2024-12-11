@@ -82,25 +82,25 @@ const authConfig = {
   basePath: "/api/auth",
 };
 
-let ExpressAuth, getSession;
-
-async function initAuth() {
-  Google = (await Google).default;
-  const auth = await authExpress;
-  ExpressAuth = auth.ExpressAuth;
-  getSession = auth.getSession;
-
-  authConfig.providers.push(
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECERT,
-    })
-  );
-  const props = ExpressAuth(authConfig);
-  app.use("/api/auth/*", props);
+function ExpressAuth(config) {
+  return async (...props) => {
+    Google = (await Google).default;
+    func = (await authExpress).ExpressAuth;
+    config.providers.push(
+      Google({
+        clientId: process.env.AUTH_GOOGLE_ID,
+        clientSecret: process.env.AUTH_GOOGLE_SECERT,
+      })
+    );
+    func(config)(...props);
+  };
 }
 
-initAuth();
+async function getSession(...props) {
+  return (await authExpress).getSession(...props);
+}
+
+app.use("/api/auth/*", ExpressAuth(authConfig));
 
 // // Error handling middleware
 app.use((err, req, res, next) => {
