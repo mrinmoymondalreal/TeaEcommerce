@@ -1,6 +1,6 @@
-import { z } from "zod";
+const { z } = require("zod");
 
-export function formValidator(props) {
+function formValidator(props) {
   const zodProps = z.object(props);
 
   function validate(name, data) {
@@ -25,7 +25,7 @@ export function formValidator(props) {
   return { validate, validateAll };
 }
 
-export function validatorMiddleware(validator) {
+function validatorMiddleware(validator) {
   return (req, res, next) => {
     console.log(req.body);
     const { isInvalid, error } = validator.validateAll(req.body);
@@ -35,3 +35,8 @@ export function validatorMiddleware(validator) {
     next();
   };
 }
+
+module.exports = {
+  formValidator,
+  validatorMiddleware,
+};

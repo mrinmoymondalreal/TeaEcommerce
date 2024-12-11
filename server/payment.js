@@ -1,12 +1,12 @@
-import Razorpay from "razorpay";
-import {
+const Razorpay = require("razorpay");
+const {
   validatePaymentVerification,
   validateWebhookSignature,
-} from "razorpay/dist/utils/razorpay-utils.js?";
+} = require("razorpay/dist/utils/razorpay-utils.js");
 
 let instance, secret, key_id;
 
-export function init() {
+function init() {
   secret = process.env.RAZORPAY_SECRET;
   key_id = process.env.RAZORPAY_KEY_ID;
   instance = new Razorpay({
@@ -15,12 +15,12 @@ export function init() {
   });
 }
 
-export function getkeyId() {
+function getkeyId() {
   return key_id;
 }
 
 // create order
-export async function createOrder(amount, receipt) {
+async function createOrder(amount, receipt) {
   var options = {
     amount,
     currency: "INR",
@@ -30,10 +30,17 @@ export async function createOrder(amount, receipt) {
 }
 
 //verify payment
-export function verifyPayment(razorpayOrderId, razorpayPaymentId, signature) {
+function verifyPayment(razorpayOrderId, razorpayPaymentId, signature) {
   return validatePaymentVerification(
     { order_id: razorpayOrderId, payment_id: razorpayPaymentId },
     signature,
     secret
   );
 }
+
+module.exports = {
+  init,
+  createOrder,
+  verifyPayment,
+  getkeyId,
+};

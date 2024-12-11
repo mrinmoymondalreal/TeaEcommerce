@@ -1,20 +1,20 @@
-import { config } from "dotenv";
-import express from "express";
-import pg from "pg";
-import cors from "cors";
+const { config } = require("dotenv");
+const express = require("express");
+const pg = require("pg");
+const cors = require("cors");
 
-import { hostname } from "os";
-import { formValidator, validatorMiddleware } from "./validator.js";
-import { z } from "zod";
+const { hostname } = require("os");
+const { formValidator, validatorMiddleware } = require("./validator.js");
+const { z } = require("zod");
 
-import Google from "@auth/express/providers/google";
-import { ExpressAuth, getSession } from "@auth/express";
-import { createOrder, getkeyId, init, verifyPayment } from "./payment.js";
-import { join } from "path";
+const Google = require("@auth/express/providers/google");
+const { ExpressAuth, getSession } = require("@auth/express");
+const { createOrder, getkeyId, init, verifyPayment } = require("./payment.js");
+const { join } = require("path");
 
 config();
 
-export const app = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 const pool = new pg.Pool({
@@ -434,4 +434,4 @@ app.use("/*", express.static(join(process.cwd(), "dist")));
 //   console.log(`Server is running on port http://localhost:${PORT}`);
 // });
 
-export default app;
+module.exports = app;
