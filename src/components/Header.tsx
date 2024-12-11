@@ -69,11 +69,23 @@ export function MainPageHeader({ className }: { className?: string }) {
             </NLink>
             <li>
               {isUserAuth ? (
-                <NLink href={`${import.meta.env.VITE_BACKEND}/auth/signout`}>
+                <NLink
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `${import.meta.env.VITE_BACKEND}/auth/signout`;
+                  }}
+                  href={`${import.meta.env.VITE_BACKEND}/auth/signout`}
+                >
                   signout
                 </NLink>
               ) : (
-                <NLink href={`${import.meta.env.VITE_BACKEND}/auth/signin`}>
+                <NLink
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `${import.meta.env.VITE_BACKEND}/auth/signin`;
+                  }}
+                  href={`${import.meta.env.VITE_BACKEND}/auth/signin`}
+                >
                   signin
                 </NLink>
               )}

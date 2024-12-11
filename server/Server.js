@@ -124,7 +124,7 @@ app.get("/api/products", async (req, res) => {
     ]);
 
     const rows = combinedResult.rows.map((row) => {
-      row.rating = row.count > 0 ? row.rating / row.count : 0;
+      row.rating = row.count > 0 ? (row.rating / row.count).toFixed(1) : 0;
       row.in_stock = row.stock > 0;
       delete row.stock;
       return row;
@@ -215,6 +215,10 @@ app.get("/api/product/name/:name", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Product not found" });
     }
+    result.rows[0].rating =
+      result.rows[0].count > 0
+        ? (result.rows[0].rating / result.rows[0].count).toFixed(1)
+        : 0;
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });

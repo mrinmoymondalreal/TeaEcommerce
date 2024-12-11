@@ -45,17 +45,15 @@ function Order({ data }: { data: OrderProps }) {
 function Page() {
   const data = useLoaderData() as OrderProps[];
 
-  console.log(!data);
-
   if (!data)
     return (
       <div className="min-h-screen flex flex-col justify-center items-center">
-        <Link
+        <a
           className="bg-zinc-950 rounded-none px-6 py-4"
-          to={`${import.meta.env.VITE_BACKEND}/auth/signin`}
+          href={`${import.meta.env.VITE_BACKEND}/auth/signin`}
         >
           Sign In to view your orders
-        </Link>
+        </a>
         <Link to="/" className="mt-3 text-gray-300">
           Back to Home
         </Link>

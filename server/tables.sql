@@ -15,7 +15,7 @@ CREATE TABLE products (
   description TEXT,
   price DECIMAL(10, 2) NOT NULL,
   stock INT NOT NULL,
-  image_urls VARCHAR[] -- Column to store array of image links of the product
+  image_urls VARCHAR[], -- Column to store array of image links of the product
   variant VARCHAR(100), -- Column to store product variant
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
