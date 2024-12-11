@@ -157,23 +157,6 @@ function ProductFirst() {
           alt="Product packaging with abstract design"
           className="w-full h-auto col-span-2"
         />
-        <div className="grid grid-cols-2">
-          <img
-            src="https://placehold.co/100x100/181818/white"
-            alt="Product packaging with abstract design"
-            className="max-w-full w-full border border-gray-300 row-span-2"
-          />
-          <img
-            src="https://placehold.co/100x100/181818/white"
-            alt="Product packaging with abstract design"
-            className="max-w-full w-full border border-gray-300"
-          />
-          <img
-            src="https://placehold.co/100x100/181818/white"
-            alt="Product packaging with abstract design"
-            className="max-w-full w-full border border-gray-300"
-          />
-        </div>
       </div>
       <div className="flex-1 p-8 sticky top-16 h-fit">
         <h1 className="text-4xl font-bold mb-2">{product.title}</h1>

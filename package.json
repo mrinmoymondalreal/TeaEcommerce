@@ -2,6 +2,7 @@
   "name": "tea",
   "private": true,
   "version": "0.0.0",
+  "main": "server/index.js",
   "type": "module",
   "scripts": {
     "dev": "vite",

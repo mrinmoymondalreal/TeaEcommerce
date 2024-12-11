@@ -3,7 +3,7 @@ import express from "express";
 import pg from "pg";
 import cors from "cors";
 
-import { hostname, type } from "os";
+import { hostname } from "os";
 import { formValidator, validatorMiddleware } from "./validator.js";
 import { z } from "zod";
 
@@ -14,7 +14,7 @@ import { join } from "path";
 
 config();
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 3000;
 
 const pool = new pg.Pool({
@@ -430,6 +430,8 @@ app.post("/api/handle_success", async (req, res) => {
 app.use("/", express.static(join(process.cwd(), "dist")));
 app.use("/*", express.static(join(process.cwd(), "dist")));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port http://localhost:${PORT}`);
+// });
+
+export default app;

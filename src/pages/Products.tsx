@@ -210,7 +210,7 @@ function Product({
           className="bg-zinc-950 aspect-square w-full flex items-center justify-center"
         >
           <img
-            src={product.image_urls[0]}
+            src={product.image_urls[1]}
             className="max-w-full h-full"
             alt=""
           />

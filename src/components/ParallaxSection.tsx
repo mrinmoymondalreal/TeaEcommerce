@@ -247,7 +247,7 @@ const Schedule = () => {
           title="Straight from Himalayas"
           date="Dec 9th"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
           location="Himalayas"
         />
         <ScheduleItem
@@ -255,42 +255,42 @@ const Schedule = () => {
           date="Dec 20th"
           location="Himalayas"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
         />
         <ScheduleItem
           title="Taste of life"
           date="Jan 13th"
           location="India"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
         />
         <ScheduleItem
           title="Nature in Sip"
           date="Feb 22nd"
           location="Darjeeeling"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
         />
         <ScheduleItem
           title="Way to Pease"
           date="Mar 1st"
           location="Assam"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
         />
         <ScheduleItem
           title="Fresh Nature Taste"
           date="Mar 8th"
           location="India"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
         />
         <ScheduleItem
           title="Nice to Taste"
           date="Apr 8th"
           location="Dargeeling"
           href={data[++i].title}
-          image={data[i].image_urls[i]}
+          image={data[i].image_urls[0]}
         />
       </div>
       <div className="text-center">
@@ -319,7 +319,7 @@ const ScheduleItem = ({
   href: string;
 }) => {
   return (
-    <Link to={href.toLowerCase().replace(/\s/g, "_")}>
+    <Link to={"/p/" + href.toLowerCase().replace(/\s/g, "_")}>
       <motion.div
         initial={{ y: 48, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
