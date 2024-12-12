@@ -3,30 +3,55 @@ import "./App.css";
 import NotFound from "./pages/NotFound";
 import Cart from "./components/Cart";
 import { Header } from "./components/Header";
+import { GlobalLoading } from "./components/GlobalLoading";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <IndexWrapper />,
-    loader: async () =>
-      (
-        await fetch(`${import.meta.env.VITE_BACKEND}/api/user`, {
-          credentials: "include",
-        })
-      ).ok,
+    element: <MainWrapper />,
     children: [
       {
-        path: "/",
-        index: true,
-        lazy: () => import("./pages/Home"),
+        path: "",
+        loader: async () =>
+          (
+            await fetch(`${import.meta.env.VITE_BACKEND}/api/user`, {
+              credentials: "include",
+            })
+          ).ok,
+        element: <IndexWrapper />,
+        children: [
+          {
+            path: "/",
+            index: true,
+            lazy: () => import("./pages/Home"),
+          },
+          {
+            path: "/products",
+            lazy: () => import("./pages/Products"),
+          },
+          {
+            path: "/p/:name",
+            lazy: () => import("./pages/ProductPage"),
+          },
+        ],
       },
       {
-        path: "/products",
-        lazy: () => import("./pages/Products"),
+        path: "/checkout",
+        lazy: () => import("./pages/Checkout"),
       },
       {
-        path: "/p/:name",
-        lazy: () => import("./pages/ProductPage"),
+        path: "/orders",
+        lazy: () => import("./pages/Orders"),
+      },
+      {
+        path: "/order_success",
+        lazy: () => import("./pages/OrderSuccess"),
+      },
+      {
+        path: "/about",
+        loader: async () =>
+          await new Promise((resolve) => setTimeout(() => resolve(true), 6000)),
+        element: <div>About</div>,
       },
     ],
   },
@@ -39,18 +64,6 @@ const router = createBrowserRouter([
   //   lazy: () => import("./pages/SignUp"),
   // },
   {
-    path: "/checkout",
-    lazy: () => import("./pages/Checkout"),
-  },
-  {
-    path: "/orders",
-    lazy: () => import("./pages/Orders"),
-  },
-  {
-    path: "/order_success",
-    lazy: () => import("./pages/OrderSuccess"),
-  },
-  {
     path: "*",
     element: <NotFound />,
   },
@@ -62,6 +75,15 @@ function IndexWrapper() {
       <Header />
       <Outlet />
       <Cart />
+    </>
+  );
+}
+
+function MainWrapper() {
+  return (
+    <>
+      <GlobalLoading />
+      <Outlet />
     </>
   );
 }
