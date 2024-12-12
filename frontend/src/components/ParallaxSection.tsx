@@ -97,7 +97,7 @@ const CenterText = function () {
       ref={ref}
       style={{ y, scale, opacity }}
     >
-      <span className="*:overflow-hidden lg:text-8xl -ml-24 text-4xl font-black uppercase text-white flex flex-col">
+      <span className="*:overflow-hidden text-4xl lg:text-8xl -ml-24 md:text-6xl font-black uppercase text-white flex flex-col">
         <span>
           <TextReveal delay={0.1}>Taste of </TextReveal>
         </span>
