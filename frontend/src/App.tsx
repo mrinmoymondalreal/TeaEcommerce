@@ -33,6 +33,10 @@ const router = createBrowserRouter([
             path: "/p/:name",
             lazy: () => import("./pages/ProductPage"),
           },
+          {
+            path: "/about",
+            lazy: () => import("./pages/AboutPage"),
+          },
         ],
       },
       {
@@ -46,12 +50,6 @@ const router = createBrowserRouter([
       {
         path: "/order_success",
         lazy: () => import("./pages/OrderSuccess"),
-      },
-      {
-        path: "/about",
-        loader: async () =>
-          await new Promise((resolve) => setTimeout(() => resolve(true), 6000)),
-        element: <div>About</div>,
       },
     ],
   },
