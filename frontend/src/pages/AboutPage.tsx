@@ -9,7 +9,7 @@ function Page() {
       <p className="text-lg mt-4">
         This is a demo project for a fullstack e-commerce app.
       </p>
-      <p className="text-lg mt-4">
+      <p className="text-lg mt-4 text-center">
         The frontend is built with React, Express, PostgreSQL, Jotai,
         TypeScript, and Vite.
       </p>
