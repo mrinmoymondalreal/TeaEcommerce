@@ -1,5 +1,5 @@
 export async function loader() {
-  return await new Promise((resolve) => setTimeout(() => resolve(true), 6000));
+  return true;
 }
 
 function Page() {
